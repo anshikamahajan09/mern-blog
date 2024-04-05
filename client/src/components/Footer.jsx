@@ -39,7 +39,7 @@ export default function FooterCom() {
               </Footer.LinkGroup>
             </div>
             <div>
-              <Footer.Title title="Folllow Us" />
+              <Footer.Title title="Follow Us" />
               <Footer.LinkGroup col>
                 <Footer.Link
                   href="https://github.com/anshikamahajan09"
