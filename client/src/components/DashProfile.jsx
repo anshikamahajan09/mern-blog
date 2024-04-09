@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { Alert, Button, Modal, TextInput } from "flowbite-react";
+import { Alert, Button, Modal, Spinner, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import {
   getDownloadURL,
@@ -17,13 +17,14 @@ import {
   deleteStart,
   deleteSuccess,
   deleteFailure,
-  signoutSuccess
+  signoutSuccess,
 } from "../redux/user/userSlice.js";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 export default function DashProfile() {
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading  } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
@@ -128,40 +129,39 @@ export default function DashProfile() {
 
   const handleDeleteUser = async () => {
     setShowModal(false);
-    try{
+    try {
       dispatch(deleteStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`,{
-        method:'DELETE'
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
       });
       const data = await res.json();
-      if(data.success === false){
+      if (data.success === false) {
         dispatch(deleteFailure(data.message));
       }
-      if(res.ok){
+      if (res.ok) {
         dispatch(deleteSuccess(data));
       }
-    }
-    catch(error){
+    } catch (error) {
       dispatch(deleteFailure(error.message));
     }
   };
 
-  const handleSignout =async () => {
+  const handleSignout = async () => {
     try {
-      const res = await fetch("/api/user/signout",{
-        method:'POST'
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
       });
       const data = await res.json();
-      if(data.success === false){
+      if (data.success === false) {
         console.log(data.message);
       }
-      if(res.ok){
+      if (res.ok) {
         dispatch(signoutSuccess());
       }
     } catch (error) {
       console.log(error.message);
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-lg mx-auto p-3">
@@ -231,15 +231,31 @@ export default function DashProfile() {
           placeholder="password"
           onChange={handleChange}
         />
-        <Button type="submit" gradientDuoTone="purpleToBlue" outline>
-          Update
+        <Button type="submit" gradientDuoTone="purpleToBlue" outline disabled={loading || imageFileUploading}>
+          {loading  ? (
+            <>
+              <Spinner size="sm" />
+              <span className="pl-3">Loading...</span>
+            </>
+          ) : (
+            "Update"
+          )}
         </Button>
+        {currentUser.isAdmin && (
+          <Link to="/create-post">
+            <Button type="button" gradientDuoTone="purpleToPink" className="w-full">
+              Create a post
+            </Button>
+          </Link>
+        )}
       </form>
       <div className="flex justify-between text-red-500 mt-5">
         <span onClick={() => setShowModal(true)} className="cursor-pointer">
           Delete account
         </span>
-        <span onClick={handleSignout} className="cursor-pointer">Sign out</span>
+        <span onClick={handleSignout} className="cursor-pointer">
+          Sign out
+        </span>
       </div>
       {updateUserSuccess && (
         <Alert color="success" className="mt-4">
@@ -251,10 +267,15 @@ export default function DashProfile() {
           {updateUserError}
         </Alert>
       )}
-      <Modal show={showModal} onClose={() => setShowModal(false)} popup size="md">
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
         <Modal.Header />
         <Modal.Body>
-        <div className="text-center">
+          <div className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
               Are you sure you want to delete your account?
