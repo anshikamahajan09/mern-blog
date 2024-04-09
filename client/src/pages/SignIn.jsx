@@ -49,9 +49,9 @@ export default function SignIn() {
         <div className="flex-1">
           <Link to="/" className="text-4xl font-bold dark:text-white">
             <span className="px-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
-              Your
+              Pen
             </span>
-            Blog
+            Palette
           </Link>
           <p className="text-sm mt-5">
             This is Your Blog where you can share your thoughts with the world.
