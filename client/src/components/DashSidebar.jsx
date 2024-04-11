@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 
 export default function DashSidebar() {
   const location = useLocation();
-  console.log(location);
   const [tab, setTab] = useState("");
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
