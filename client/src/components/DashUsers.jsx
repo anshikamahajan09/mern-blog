@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { FaCheck, FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { deleteSuccess } from "../redux/user/userSlice";
 
 export default function DashUsers() {
   const { currentUser } = useSelector((state) => state.user);
@@ -10,6 +13,9 @@ export default function DashUsers() {
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -47,6 +53,28 @@ export default function DashUsers() {
   };
   
   const handleDeleteUser = async () => {
+    setShowModal(false);
+    try {
+      const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      
+      if (!res.ok) {
+        console.log(data.message);
+      }
+      if (res.ok) {
+        const newUsers = users.filter((user) => user._id !== userIdToDelete);
+        setUsers(newUsers);
+      }
+      if(userIdToDelete === currentUser._id){
+        dispatch(deleteSuccess());
+        navigate("/sign-in");
+      }
+
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -84,7 +112,7 @@ export default function DashUsers() {
                     <span
                       onClick={() => {
                         setShowModal(true);
-                        setUserIdToDelete(post._id);
+                        setUserIdToDelete(user._id);
                       }}
                       className="font medium text-red-500 hover:underline cursor-pointer"
                     >
