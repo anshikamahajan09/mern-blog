@@ -24,7 +24,7 @@ export default function UpdatePost() {
   const navigate = useNavigate();
   const { postId } = useParams();
   const { currentUser } = useSelector((state) => state.user);
-
+  console.log('From here', formData);
   useEffect(() => {
     try {
       const fetchPost = async () => {
@@ -79,7 +79,6 @@ export default function UpdatePost() {
     }
   };
 
-  console.log(formData);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
