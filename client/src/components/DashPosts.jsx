@@ -47,7 +47,6 @@ export default function DashPosts() {
       console.log(error.message);
     }
   };
-console.log(userPosts);
   const handleDeletePost = async () => {
     setShowModal(false);
     try {
@@ -84,7 +83,7 @@ console.log(userPosts);
               <Table.HeadCell>Edit</Table.HeadCell>
             </Table.Head>
             {userPosts.map((post) => (
-              <Table.Body className="divide-y">
+              <Table.Body className="divide-y" key={post._id}>
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>
                     {new Date(post.updatedAt).toLocaleDateString()}
@@ -119,7 +118,7 @@ console.log(userPosts);
                     </span>
                   </Table.Cell>
                   <Table.Cell>
-                    <Link to={`update-post/${post._id}`}>
+                    <Link to={`/update-post/${post._id}`}>
                       <span className="text-teal-500 hover:underline">
                         Edit
                       </span>
