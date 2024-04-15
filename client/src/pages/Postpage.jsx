@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import { Button, Spinner } from "flowbite-react";
+import CommentSection from "../components/CommentSection";
 
 export default function Postpage() {
   const { postSlug } = useParams();
@@ -65,6 +66,7 @@ export default function Postpage() {
           )}
         </div>
         <div className="p-3 max-w-2xl mx-auto w-full post-content" dangerouslySetInnerHTML={{__html:post && post.content}}></div>
+        < CommentSection postId={post._id} />
       </div>
     </div>
   );
