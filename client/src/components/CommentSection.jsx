@@ -1,11 +1,13 @@
 import { Button, Textarea, Spinner } from "flowbite-react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Comment from "./Comment";
 
 export default function CommentSection({ postId }) {
   const { currentUser } = useSelector((state) => state.user);
   const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -13,7 +15,7 @@ export default function CommentSection({ postId }) {
     e.preventDefault();
     if (comment.length > 200) {
       alert("Comment should be less than 200 characters");
-        setLoading(false);
+      setLoading(false);
       return;
     }
     try {
@@ -32,12 +34,28 @@ export default function CommentSection({ postId }) {
       if (res.ok) {
         setLoading(false);
         setComment("");
+        setComments([data, ...comments]);
       }
     } catch (error) {
-        setLoading(false);
+      setLoading(false);
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await fetch(`/api/comment/getComments/${postId}`);
+        const data = await res.json();
+        if (res.ok) {
+          setComments(data);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    fetchComments();
+  }, [postId]);
 
   return (
     <div className="max-w-2xl mx-auto w-full p-3">
@@ -79,8 +97,13 @@ export default function CommentSection({ postId }) {
             <p className="text-gray-500 text-xs">
               {200 - comment.length} characters left
             </p>
-            <Button outline gradientDuoTone="purpleToPink" type="submit" disabled={loading}>
-            {loading ? (
+            <Button
+              outline
+              gradientDuoTone="purpleToPink"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
                 <>
                   <Spinner size="sm" />
                   <span className="pl-3">Submitting...</span>
@@ -91,6 +114,23 @@ export default function CommentSection({ postId }) {
             </Button>
           </div>
         </form>
+      )}
+      {comments.length == 0 ? (
+        <p className="text-sm my-5 flex items-center gap-1">No comments yet!</p>
+      ) : (
+        <>
+          <div className="flex items-center gap-1 text-sm my-5">
+            <p>Comments</p>
+            <div className="border border-gray-400 py-1 px-2 rounded-sm">
+              {comments.length}
+            </div>
+          </div>
+          <div>
+            {comments.map((comment) => (
+                <Comment key={comment._id} comment={comment}/>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
