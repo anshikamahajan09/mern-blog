@@ -4,7 +4,7 @@ import { FaThumbsUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Button, Textarea } from "flowbite-react";
 
-export default function Comment({ comment, onLike, onEdit }) {
+export default function Comment({ comment, onLike, onEdit, onDelete }) {
   const [user, setUser] = useState({});
   const { currentUser } = useSelector((state) => state.user);
   const [isEditing, setIsEditing] = useState(false);
@@ -29,26 +29,26 @@ export default function Comment({ comment, onLike, onEdit }) {
     setIsEditing(true);
   };
 
-  const handleSave = async()=>{
+  const handleSave = async () => {
     try {
-      const res = await fetch(`/api/comment/editComment/${comment._id}`,{
-        method:"PUT",
-        headers:{
-          'Content-Type':'application/json'
+      const res = await fetch(`/api/comment/editComment/${comment._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify({
-          content:editedComment
-        })
-      })
+        body: JSON.stringify({
+          content: editedComment,
+        }),
+      });
       const data = await res.json();
-      if(res.ok){
-        onEdit(comment._id,editedComment);
+      if (res.ok) {
+        onEdit(comment._id, editedComment);
         setIsEditing(false);
       }
     } catch (error) {
       console.log(error.message);
     }
-  }
+  };
 
   return (
     <div className="flex p-4 border-b dark:border-gray-600 text-sm">
@@ -76,7 +76,12 @@ export default function Comment({ comment, onLike, onEdit }) {
               onChange={(e) => setEditedComment(e.target.value)}
             />
             <div className="flex justify-end gap-2 text-xs">
-              <Button type="button" size="sm" gradientDuoTone="purpleToBlue" onClick={handleSave}>
+              <Button
+                type="button"
+                size="sm"
+                gradientDuoTone="purpleToBlue"
+                onClick={handleSave}
+              >
                 Save
               </Button>
               <Button
@@ -113,13 +118,22 @@ export default function Comment({ comment, onLike, onEdit }) {
               </p>
               {currentUser &&
                 (currentUser._id === comment.userId || currentUser.isAdmin) && (
-                  <button
-                    type="button"
-                    onClick={handleEdit}
-                    className="text-gray-400 hover:text-blue-500"
-                  >
-                    Edit
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleEdit}
+                      className="text-gray-400 hover:text-blue-500"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={onDelete}
+                      className="text-gray-400 hover:text-red-500"
+                    >
+                      Delete
+                    </button>
+                  </>
                 )}
             </div>
           </>
