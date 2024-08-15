@@ -11,6 +11,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import CreatePost from "./pages/CreatePost";
 import UpdatePost from "./pages/UpdatePost";
 import Postpage from "./pages/Postpage";
+import Search from "./pages/Search";
 import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/about" element={<About />} />
+        <Route path="/search" element={<Search />} />
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
@@ -33,7 +35,6 @@ export default function App() {
         </Route>
         <Route path="/post/:postSlug" element={<Postpage />} />
         <Route path="/projects" element={<Projects />} />
-        
       </Routes>
       <FooterCom />
     </BrowserRouter>

@@ -115,3 +115,20 @@ export const getCommentsAll = async (req, res, next) => {
     next(error);
   }
 };
+
+// get comments on post by user and limit them as above
+// export const getCommentsAll = async (req, res, next) => {
+//   try {
+//     const startIndex = parseInt(req.query.startIndex) || 0;
+//     const limit = parseInt(req.query.limit) || 9;
+//     const comments = await Comment.find({ userId: req.params.userId })
+//       .sort({ createdAt: -1 })
+//       .skip(startIndex)
+//       .limit(limit);
+//     const totalComments = await Comment.countDocuments({ userId: req.params.userId });
+//     res.status(200).json({ comments, totalComments });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+

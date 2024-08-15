@@ -5,7 +5,7 @@ import {create, getPosts, deletePost, updatePost} from "../controllers/post.cont
 const router = express.Router();
 
 router.post("/create",verifyToken,create);
-router.get("/getPosts",verifyToken,getPosts);
+router.get("/getPosts",getPosts);
 router.delete("/deletePost/:postId/:userId",verifyToken,deletePost);
 router.put("/updatePost/:postId/:userId",verifyToken,updatePost);
 
